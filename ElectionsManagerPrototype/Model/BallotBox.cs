@@ -29,7 +29,7 @@ namespace ElectionsManagerPrototype.Model
         /// Key: Voter ID
         /// Value: Voter Instance
         /// </summary>
-        public Dictionary<string, Voter> VotersList { get; set; }
+        public Dictionary<string, Voter> VotersDict { get; set; }
 
         /// <summary>
         /// Elections for which the ballot box is intended
@@ -50,7 +50,7 @@ namespace ElectionsManagerPrototype.Model
         {
             Id = id;
             Address = address;
-            VotersList = votersList.ToDictionary(voter => voter.Id); ;
+            VotersDict = votersList.ToDictionary(voter => voter.Id); ;
             _AssociateVoters();
         }
 
@@ -58,14 +58,36 @@ namespace ElectionsManagerPrototype.Model
 
         #region Public Methods------------------------------------------------
 
+        /// <summary>
+        /// Set vote from Ballot Box
+        /// </summary>
+        /// <param name="voterId">Voter ID</param>
+        /// <param name="positionName">Position Name</param>
+        /// <param name="candidateId">Candidate ID</param>
+        /// <exception cref="ArgumentException">Wrong vote details handling exeption</exception>
         public void SetVote(string voterId, string positionName, string candidateId)
         {
-            if(VotersList.ContainsKey(voterId))
+            if(VotersDict.ContainsKey(voterId))
             {
-                if (VotersList[voterId].PositionsForVote.ContainsKey(positionName))
-                { 
-
+                if (VotersDict[voterId].PositionsForVoteDict.ContainsKey(positionName))
+                {
+                    if (VotersDict[voterId].PositionsForVoteDict[positionName].CandidatesDict.ContainsKey(candidateId))
+                    {
+                        VotersDict[voterId].PositionsForVoteDict[positionName].CandidatesDict[candidateId].AddVote(Id);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Requested candidate ID[{candidateId}] not exist for position [{positionName}]"); 
+                    }
                 }
+                else
+                {
+                    throw new ArgumentException($"Voter with ID[{voterId}] cannot vote for requested position [{positionName}]");
+                }
+            }
+            else
+            {
+                throw new ArgumentException($"Voter with ID[{voterId} not belongs to Ballot Box with ID[{Id}]");
             }
         }
 
@@ -90,7 +112,7 @@ namespace ElectionsManagerPrototype.Model
             stringBuilder.AppendLine($"\t#------Voters list starts------#");
             stringBuilder.AppendLine();
 
-            foreach (var voter in VotersList)
+            foreach (var voter in VotersDict)
             {
                 stringBuilder.AppendLine("\t" + voter.Value.ToString().Replace("\n", "\n\t"));
             }
@@ -121,7 +143,7 @@ namespace ElectionsManagerPrototype.Model
         /// </summary>
         private void _AssociateVoters()
         {
-            foreach (KeyValuePair<string, Voter> kvp in VotersList)
+            foreach (KeyValuePair<string, Voter> kvp in VotersDict)
             {
                 string key = kvp.Key;
                 Voter value = kvp.Value;

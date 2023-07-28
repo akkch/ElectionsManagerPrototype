@@ -62,7 +62,7 @@ namespace ElectionsManagerPrototype.Model
             }
             else
             {
-                throw new ArgumentException("Wrong ballot box id was received");
+                throw new ArgumentException($"Candidate with ID[{Id} not belongs to Ballot Box with ID[{bBoxId}]");
             }
         }
 

@@ -24,7 +24,7 @@ namespace ElectionsManagerPrototype.Model
         /// Key: Position Name
         /// Value: Position Instance
         /// </summary>
-        public Dictionary<string, ElectoralBodyPosition> PositionsForVote { get; set; }
+        public Dictionary<string, ElectoralBodyPosition> PositionsForVoteDict { get; set; }
 
         #endregion//Properties
 
@@ -40,7 +40,7 @@ namespace ElectionsManagerPrototype.Model
         /// <param name="positionsForVote">Dictionary of positions for which voter cab vote</param>
         public Voter(string name, string id, Address address, string phone, Dictionary<string, ElectoralBodyPosition> positionsForVote) : base(name, id, address, phone, User.Role.Voter)
         {
-            PositionsForVote = positionsForVote;
+            PositionsForVoteDict = positionsForVote;
         }
 
         #endregion//Constructors
@@ -65,7 +65,7 @@ namespace ElectionsManagerPrototype.Model
             stringBuilder.AppendLine($"\t#------List of possible votes starts------#");
             stringBuilder.AppendLine();
 
-            foreach (var position in PositionsForVote)
+            foreach (var position in PositionsForVoteDict)
             {
                 stringBuilder.AppendLine($"\tPosition for vote : {position.Value.Name}");
             }

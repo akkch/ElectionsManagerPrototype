@@ -33,7 +33,7 @@ namespace ElectionsManagerPrototype.Model
         /// Key: Candidate ID
         /// Value Candidate Instance
         /// </summary>
-        public Dictionary<string, PositionCandidate> CandidatesList { get; set; }
+        public Dictionary<string, PositionCandidate> CandidatesDict { get; set; }
 
         /// <summary>
         /// Electoral Body of this position
@@ -84,7 +84,7 @@ namespace ElectionsManagerPrototype.Model
             stringBuilder.AppendLine($"\t#------Candidates list starts------#");
             stringBuilder.AppendLine();
 
-            foreach (var candidate in CandidatesList)
+            foreach (var candidate in CandidatesDict)
             {
                 stringBuilder.AppendLine("\t" + candidate.ToString().Replace("\n", "\n\t"));
             }
@@ -126,8 +126,8 @@ namespace ElectionsManagerPrototype.Model
         /// <param name="candidatesList">Dictionary with candidates for this position</param>
         private void _AssociateCandidates(Dictionary<string, PositionCandidate> candidatesList)
         {
-            CandidatesList = candidatesList;
-            foreach (var candidate in CandidatesList)
+            CandidatesDict = candidatesList;
+            foreach (var candidate in CandidatesDict)
             {
                 candidate.Value.AssPosition = this;
             }
