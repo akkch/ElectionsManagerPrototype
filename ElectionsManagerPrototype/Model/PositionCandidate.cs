@@ -14,6 +14,11 @@ namespace ElectionsManagerPrototype.Model
         #region Properties----------------------------------------------------
 
         /// <summary>
+        /// Elections result(True/False - win/loose)
+        /// </summary>
+        public bool WinInElections { get; set; }
+
+        /// <summary>
         /// Votes count
         /// </summary>
         public long VotesCount { get; set; }
@@ -34,7 +39,7 @@ namespace ElectionsManagerPrototype.Model
         /// <param name="id">Candidate Israeli ID</param>
         /// <param name="address">Candidate address</param>
         /// <param name="phone">Candidate Israeli phone</param>
-        public PositionCandidate(string name, string id, Address address, string phone) : base(name, id, address, phone, User.Role.Candidate)
+        public PositionCandidate(string name, string id, Address address, string phone, Role role) : base(name, id, address, phone, role)
         {
 
         }

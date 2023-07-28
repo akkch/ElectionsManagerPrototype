@@ -25,7 +25,9 @@ namespace ElectionsManagerPrototype.Model
         public Address Address { get; set; }
 
         /// <summary>
-        /// List of voters related to this ballot box
+        /// Dictionary of voters related to this ballot box
+        /// Key: Voter ID
+        /// Value: Voter Instance
         /// </summary>
         public Dictionary<string, Voter> VotersList { get; set; }
 
@@ -56,6 +58,12 @@ namespace ElectionsManagerPrototype.Model
 
         #region Public Methods------------------------------------------------
 
+        public void SetVote(string voterId, string positionName)
+        {
+
+        }
+
+
         /// <summary>
         /// Override of built-in object method for correct using in this app
         /// </summary>
@@ -78,7 +86,7 @@ namespace ElectionsManagerPrototype.Model
 
             foreach (var voter in VotersList)
             {
-                stringBuilder.AppendLine("\t" + voter.ToString().Replace("\n", "\n\t"));
+                stringBuilder.AppendLine("\t" + voter.Value.ToString().Replace("\n", "\n\t"));
             }
 
             stringBuilder.AppendLine();

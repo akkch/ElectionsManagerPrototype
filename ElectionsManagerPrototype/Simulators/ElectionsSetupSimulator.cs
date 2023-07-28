@@ -47,6 +47,9 @@ namespace ElectionsManagerPrototype.Simulators
         /// </summary>
         private int _NumOfPositions { get; set; }
 
+        // Class-level HashSet to store the generated IDs(For prevent duplicates)
+        private HashSet<string> generatedIDs { get; set; } = new HashSet<string>();
+
         #endregion//Properties
 
         #region Constructors--------------------------------------------------
@@ -83,7 +86,7 @@ namespace ElectionsManagerPrototype.Simulators
             Console.WriteLine(ToScoolBoard);
 
             Console.WriteLine("Press any key for continue");
-            Console.ReadKey();
+            Console.ReadLine();
 
         }
 
@@ -144,7 +147,7 @@ namespace ElectionsManagerPrototype.Simulators
             for (int i = 0; i < _NumOfCandidates; i++)
             {
                 Address addr = new Address($"Position_{iPositionNumber}_Candidate_{i}_City", $"Position_{iPositionNumber}_Candidate_{i}_Street", iPositionNumber + i.ToString());
-                candidates.Add(new PositionCandidate($"Position_{iPositionNumber}_Candidate_{i}_Name" + iPositionNumber + i, GenerateValidID(), addr, "05430484" + iPositionNumber + i));
+                candidates.Add(new PositionCandidate($"Position_{iPositionNumber}_Candidate_{i}_Name" + iPositionNumber + i, GenerateValidID(), addr, "05430484" + iPositionNumber + i, User.Role.Candidate));
             }
 
             return candidates;
@@ -181,14 +184,21 @@ namespace ElectionsManagerPrototype.Simulators
             for (int i = 0; i < _NumOfVotersPerBbox; i++)
             {
                 Address addr = new Address($"Voter_{i}_BallotBox_{ballotBoxId}_City", $"Voter_{i}_BallotBox_{ballotBoxId}_Street", ballotBoxId.ToString());
-                voters.Add(new Voter($"Voter_{i}_BallotBox_{ballotBoxId}_Name", $"1234567{ballotBoxId}{i}", addr, "05430484" + ballotBoxId + i, elBody.PositionsList.Take(i).ToList()));
+
+                //Generation possible votes for each voter
+                //It will be generated according to the following rule:
+                //  Each voter will get first i positions for vote
+                List<Vote> PossibleVotesList = new List<Vote>();
+                elBody.PositionsList.Take(i).ToList().ForEach(position => PossibleVotesList.Add(new Vote(position)));
+
+                voters.Add(new Voter($"Voter_{i}_BallotBox_{ballotBoxId}_Name", GenerateValidID(), addr, "05430484" + ballotBoxId + i, PossibleVotesList));
             }
 
             return voters;
         }
 
         /// <summary>
-        /// Generate Israeli ID whichc will pass validation
+        /// Generate Israeli ID which will pass validation
         /// </summary>
         /// <returns></returns>
         private string GenerateValidID()
@@ -196,38 +206,47 @@ namespace ElectionsManagerPrototype.Simulators
             Random random = new Random();
             int[] digits = new int[8];
 
-            // Generate the first 8 digits randomly (1 to 9)
-            for (int i = 0; i < 8; i++)
+            // Keep generating IDs until a unique one is found
+            while (true)
             {
-                digits[i] = random.Next(1, 10);
-            }
-
-            // Calculate the control digit
-            int sum = 0;
-            for (int i = 0; i < 8; i++)
-            {
-                int digit = digits[i];
-                if (i % 2 == 0)
+                // Generate the first 8 digits randomly (1 to 9)
+                for (int i = 0; i < 8; i++)
                 {
-                    digit *= 1;
+                    digits[i] = random.Next(1, 10);
                 }
-                else
+
+                // Calculate the control digit
+                int sum = 0;
+                for (int i = 0; i < 8; i++)
                 {
-                    digit *= 2;
-                    if (digit > 9)
+                    int digit = digits[i];
+                    if (i % 2 == 0)
                     {
-                        digit = (digit % 10) + 1;
+                        digit *= 1;
                     }
+                    else
+                    {
+                        digit *= 2;
+                        if (digit > 9)
+                        {
+                            digit = (digit % 10) + 1;
+                        }
+                    }
+                    sum += digit;
                 }
-                sum += digit;
+
+                int controlDigit = (10 - (sum % 10)) % 10;
+
+                // Append the control digit to the ID number
+                string validIDNumber = string.Join("", digits) + controlDigit;
+
+                // Check if the generated ID already exists, if not, add it to the HashSet and return it
+                if (!generatedIDs.Contains(validIDNumber))
+                {
+                    generatedIDs.Add(validIDNumber);
+                    return validIDNumber;
+                }
             }
-
-            int controlDigit = (10 - (sum % 10)) % 10;
-
-            // Append the control digit to the ID number
-            string validIDNumber = string.Join("", digits) + controlDigit;
-
-            return validIDNumber;
         }
 
         #endregion//Helpers

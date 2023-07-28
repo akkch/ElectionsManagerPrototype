@@ -131,7 +131,7 @@ namespace ElectionsManagerPrototype.UI
                     Console.Write(inputChar);
                 }
 
-            } while (keyInfo.Key != ConsoleKey.Enter);
+            } while (keyInfo.Key != ConsoleKey.Enter || inputBuilder.Length < 1);
 
             return inputBuilder.ToString();
         }
