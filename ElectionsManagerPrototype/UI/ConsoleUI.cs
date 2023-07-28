@@ -125,11 +125,22 @@ namespace ElectionsManagerPrototype.UI
                 keyInfo = Console.ReadKey(intercept: true);
                 char inputChar = keyInfo.KeyChar;
 
-                if (isValidCharCallback(inputChar))
+                if (keyInfo.Key == ConsoleKey.Backspace)
                 {
-                    inputBuilder.Append(inputChar);
-                    Console.Write(inputChar);
+                    if (inputBuilder.Length > 0)
+                    {
+                        // Remove the last character from the inputBuilder
+                        inputBuilder.Remove(inputBuilder.Length - 1, 1);
+
+                        // Move the cursor back and overwrite the character with a space
+                        Console.Write("\b \b");
+                    }
                 }
+                else if (isValidCharCallback(inputChar))
+                    {
+                        inputBuilder.Append(inputChar);
+                        Console.Write(inputChar);
+                    }
 
             } while (keyInfo.Key != ConsoleKey.Enter || inputBuilder.Length < 1);
 

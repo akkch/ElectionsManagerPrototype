@@ -58,9 +58,15 @@ namespace ElectionsManagerPrototype.Model
 
         #region Public Methods------------------------------------------------
 
-        public void SetVote(string voterId, string positionName)
+        public void SetVote(string voterId, string positionName, string candidateId)
         {
+            if(VotersList.ContainsKey(voterId))
+            {
+                if (VotersList[voterId].PositionsForVote.ContainsKey(positionName))
+                { 
 
+                }
+            }
         }
 
 

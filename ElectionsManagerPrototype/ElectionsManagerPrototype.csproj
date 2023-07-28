@@ -53,7 +53,6 @@
     <Compile Include="Model\PositionOwner.cs" />
     <Compile Include="Model\PositionCandidate.cs" />
     <Compile Include="Model\User.cs" />
-    <Compile Include="Model\Vote.cs" />
     <Compile Include="Model\Voter.cs" />
     <Compile Include="Presenters\ElectionsSetupPresenter.cs" />
     <Compile Include="Program.cs" />

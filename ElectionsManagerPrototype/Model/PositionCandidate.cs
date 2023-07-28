@@ -19,14 +19,16 @@ namespace ElectionsManagerPrototype.Model
         public bool WinInElections { get; set; }
 
         /// <summary>
-        /// Votes count
-        /// </summary>
-        public long VotesCount { get; set; }
-
-        /// <summary>
         /// Position for which the candidate is intended
         /// </summary>
         public ElectoralBodyPosition AssPosition { get; set; }
+
+        /// <summary>
+        /// Votes count
+        /// Key: Ballot Box ID
+        /// Value: VotesCount
+        /// </summary>
+        public Dictionary<string, long> BallotBoxVotesDict { get; set; } = new Dictionary<string, long>();
 
         #endregion//Properties
 
@@ -41,12 +43,45 @@ namespace ElectionsManagerPrototype.Model
         /// <param name="phone">Candidate Israeli phone</param>
         public PositionCandidate(string name, string id, Address address, string phone, Role role) : base(name, id, address, phone, role)
         {
-
         }
 
         #endregion//Constructors
 
         #region Public Methods------------------------------------------------
+
+        /// <summary>
+        /// Add vote to candidate
+        /// </summary>
+        /// <param name="bBoxId">Ballot Box ID, which request vote</param>
+        /// <exception cref="ArgumentException">Raised when not exist Ballot Box Id was requested</exception>
+        public void AddVote(string bBoxId)
+        {
+            if(BallotBoxVotesDict.ContainsKey(bBoxId))
+            {
+                BallotBoxVotesDict[bBoxId]++;
+            }
+            else
+            {
+                throw new ArgumentException("Wrong ballot box id was received");
+            }
+        }
+
+        /// <summary>
+        /// get the number of votes for a candidate, which are received from the ballot box by its ID
+        /// </summary>
+        /// <param name="bBoxId">Ballot Box ID, for which request number of votes</param>
+        /// <exception cref="ArgumentException">Raised when not exist Ballot Box Id was requested</exception>
+        public long GetVotes(string bBoxId)
+        {
+            if (BallotBoxVotesDict.ContainsKey(bBoxId))
+            {
+                return BallotBoxVotesDict[bBoxId];
+            }
+            else
+            {
+                throw new ArgumentException("Wrong ballot box id was received");
+            }
+        }
 
         /// <summary>
         /// Override of built-in object method for correct using in this app

@@ -20,9 +20,11 @@ namespace ElectionsManagerPrototype.Model
 
 
         /// <summary>
-        /// List of possible votes
+        /// Dictionary of positions for which voter cab vote
+        /// Key: Position Name
+        /// Value: Position Instance
         /// </summary>
-        public List<Vote> PossibleVotesList { get; set; }
+        public Dictionary<string, ElectoralBodyPosition> PositionsForVote { get; set; }
 
         #endregion//Properties
 
@@ -35,10 +37,10 @@ namespace ElectionsManagerPrototype.Model
         /// <param name="id">Voter Israeli ID</param>
         /// <param name="address">Voter address</param>
         /// <param name="phone">Voter Israeli phone</param>
-        /// <param name="possibleVotesList">List of possible votes</param>
-        public Voter(string name, string id, Address address, string phone, List<Vote> possibleVotesList) : base(name, id, address, phone, User.Role.Voter)
+        /// <param name="positionsForVote">Dictionary of positions for which voter cab vote</param>
+        public Voter(string name, string id, Address address, string phone, Dictionary<string, ElectoralBodyPosition> positionsForVote) : base(name, id, address, phone, User.Role.Voter)
         {
-            PossibleVotesList = possibleVotesList;
+            PositionsForVote = positionsForVote;
         }
 
         #endregion//Constructors
@@ -56,17 +58,16 @@ namespace ElectionsManagerPrototype.Model
 
             stringBuilder.AppendLine($"#------Voter details Starts------#");
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine($"\tOwner for the position {AssBallotBox.Id}");
+            stringBuilder.AppendLine($"\tVoter belogns to ballot box : {AssBallotBox.Id}");
             stringBuilder.AppendLine();
             stringBuilder.AppendLine("\t" + base.ToString().Replace("\n", "\n\t"));
             stringBuilder.AppendLine();
             stringBuilder.AppendLine($"\t#------List of possible votes starts------#");
             stringBuilder.AppendLine();
 
-            foreach (var vote in PossibleVotesList)
+            foreach (var position in PositionsForVote)
             {
-                stringBuilder.AppendLine($"\tVote for position : {vote.Position.Name}");
-                stringBuilder.AppendLine($"\tVote Status : {(vote.Voted ? "Voted" : "Not Voted")}");
+                stringBuilder.AppendLine($"\tPosition for vote : {position.Value.Name}");
             }
 
             stringBuilder.AppendLine();

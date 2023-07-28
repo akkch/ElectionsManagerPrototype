@@ -30,8 +30,10 @@ namespace ElectionsManagerPrototype.Model
 
         /// <summary>
         /// Position Candidates
+        /// Key: Candidate ID
+        /// Value Candidate Instance
         /// </summary>
-        public List<PositionCandidate> CandidatesList { get; set; }
+        public Dictionary<string, PositionCandidate> CandidatesList { get; set; }
 
         /// <summary>
         /// Electoral Body of this position
@@ -49,7 +51,7 @@ namespace ElectionsManagerPrototype.Model
         /// <param name="description">Electoral body position description</param>
         /// <param name="owner">Electoral body position owner</param>
         /// <param name="candidatesList">Electoral body position candidates list</param>
-        public ElectoralBodyPosition(string name, string description, PositionOwner owner, List<PositionCandidate> candidatesList)
+        public ElectoralBodyPosition(string name, string description, PositionOwner owner, Dictionary<string, PositionCandidate> candidatesList)
         {
             Name = name;
             Description = description;
@@ -121,11 +123,14 @@ namespace ElectionsManagerPrototype.Model
         /// <summary>
         /// Associate all candidates for this position
         /// </summary>
-        /// <param name="candidatesList">List of candidates for this position</param>
-        private void _AssociateCandidates(List<PositionCandidate> candidatesList)
+        /// <param name="candidatesList">Dictionary with candidates for this position</param>
+        private void _AssociateCandidates(Dictionary<string, PositionCandidate> candidatesList)
         {
             CandidatesList = candidatesList;
-            CandidatesList.ForEach(c => { c.AssPosition = this; });
+            foreach (var candidate in CandidatesList)
+            {
+                candidate.Value.AssPosition = this;
+            }
         }
 
         #endregion//Helpers

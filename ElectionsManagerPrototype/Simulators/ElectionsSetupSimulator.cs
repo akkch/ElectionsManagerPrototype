@@ -73,6 +73,11 @@ namespace ElectionsManagerPrototype.Simulators
             ElectoralBody Scool = _GetElectoralBody();
             List<BallotBox> toScoolBallotBoxesList = _GetBallotBoxes(Scool);
 
+            //toScoolBallotBoxesList.ForEach(bBoxId => Scool.BallotBoxVotesDict.Add(bBoxId, 0));
+
+            //foreach(var position)
+            //toScoolBallotBoxesList.ForEach(bBox => )
+
             ToScoolBoard = new Elections(123456789, Scool, toScoolBallotBoxesList, DateTime.Now, DateTime.Now.AddMinutes(2));
 
             Console.WriteLine("Preparation of simulation results");
@@ -132,7 +137,7 @@ namespace ElectionsManagerPrototype.Simulators
             Address addr = new Address($"Position_{iPositionNumber}_Owner_City", $"Position_{iPositionNumber}_Owner_Street", iPositionNumber.ToString());
             PositionOwner owner = new PositionOwner($"Position_{iPositionNumber}_Owner_Name", GenerateValidID(), addr, "054304845" + iPositionNumber);
 
-            return new ElectoralBodyPosition($"Position_{iPositionNumber}_Name", $"Position_{iPositionNumber}_Description", owner, candidates);
+            return new ElectoralBodyPosition($"Position_{iPositionNumber}_Name", $"Position_{iPositionNumber}_Description", owner, candidates.ToDictionary(candidate => candidate.Id, candidate => candidate));
         }
 
         /// <summary>
@@ -188,10 +193,7 @@ namespace ElectionsManagerPrototype.Simulators
                 //Generation possible votes for each voter
                 //It will be generated according to the following rule:
                 //  Each voter will get first i positions for vote
-                List<Vote> PossibleVotesList = new List<Vote>();
-                elBody.PositionsList.Take(i).ToList().ForEach(position => PossibleVotesList.Add(new Vote(position)));
-
-                voters.Add(new Voter($"Voter_{i}_BallotBox_{ballotBoxId}_Name", GenerateValidID(), addr, "05430484" + ballotBoxId + i, PossibleVotesList));
+                voters.Add(new Voter($"Voter_{i}_BallotBox_{ballotBoxId}_Name", GenerateValidID(), addr, "05430484" + ballotBoxId + i, elBody.PositionsList.Take(i).ToList().ToDictionary(position => position.Name, position => position)));
             }
 
             return voters;
