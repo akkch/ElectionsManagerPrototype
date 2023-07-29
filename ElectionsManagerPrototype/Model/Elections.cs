@@ -13,14 +13,19 @@ namespace ElectionsManagerPrototype.Model
         #region Fields--------------------------------------------------------
 
         /// <summary>
-        /// Elections Start Date and Time
+        /// Elections Start Date and Time(Will be received in constructor)
         /// </summary>
         private readonly DateTime _StartDateTime;
 
         /// <summary>
-        /// Elections End Date and Time
+        /// Elections End Date and Time(Will be defined by closing elections - By Elections committee member)
         /// </summary>
-        private readonly DateTime _EndDateTime;
+        private DateTime _EndDateTime;
+
+        /// <summary>
+        /// Voting End Date and Time(Will be defined in constructor - By adding voting duration)
+        /// </summary>
+        private readonly DateTime _VotingEndDateTime;
 
         /// <summary>
         /// For call Date/Time listener
@@ -81,20 +86,36 @@ namespace ElectionsManagerPrototype.Model
         /// <param name="electoralBody">Elections electoral body</param>
         /// <param name="ballotBoxesList">Elections ballot boxes list</param>
         /// <param name="startDateTime">Elections start date/time</param>
-        /// <param name="endDateTime">Elections sendtart date/time</param>
-        public Elections(int id, ElectoralBody electoralBody, List<BallotBox> ballotBoxesList, DateTime startDateTime, DateTime endDateTime)
+        /// <param name="votingDuration">Voting duration in seconds</param>
+        public Elections(int id, ElectoralBody electoralBody, List<BallotBox> ballotBoxesList, DateTime startDateTime, int votingDuration)
         {
             Id = id;
             _AssociateElectoralBody(electoralBody);
             _AssociateBallotBoxes(ballotBoxesList);
-
             _StartDateTime = startDateTime;
-            _EndDateTime = endDateTime;
+            _VotingEndDateTime = _StartDateTime.AddSeconds(votingDuration);
         }
 
         #endregion//Constructors
 
         #region Public Methods------------------------------------------------
+
+        /// <summary>
+        /// Run elections service
+        /// </summary>
+        public void RunService()
+        {
+            _Timer = new Timer(_DateTimeListener, null, 0, 1000);
+        }
+
+        /// <summary>
+        /// Close elections
+        /// </summary>
+        public void Close()
+        {
+            ElectionsOpened = false;
+            _EndDateTime = DateTime.Now;
+        }
 
         /// <summary>
         /// Override of built-in object method for correct using in this app
@@ -139,24 +160,17 @@ namespace ElectionsManagerPrototype.Model
         /// <summary>
         /// Dat/Time Listener, for raise Elections opened/closed events
         /// </summary>
-        private void _DateTimeListener()
+        private void _DateTimeListener(object state)
         {
             DateTime now = DateTime.Now;
 
-            if (now >= _StartDateTime && now < _EndDateTime)
+            if (now >= _StartDateTime && !ElectionsOpened)
             {
-                ElectionsOpened = true;
-                VotingOpened = true;
-                // Trigger the event when the start date is reached
-                StartDateTimeReached?.Invoke(this, EventArgs.Empty);
+                _ElectionsOpened();
             }
-            else if (now >= _EndDateTime)
+            else if (now >= _VotingEndDateTime)
             {
-                ElectionsOpened = false;
-                VotingOpened = false;
-
-                // Trigger the event when the end date is reached
-                EndDateTimeReached?.Invoke(this, EventArgs.Empty);
+                _VotingClosed();
 
                 // Stop the timer since the end date is reached
                 _Timer.Dispose();
@@ -187,7 +201,17 @@ namespace ElectionsManagerPrototype.Model
 
         #region Helpers
 
-        //  -   None
+        private void _ElectionsOpened()
+        {
+            ElectionsOpened = true;
+            VotingOpened = true;
+        }
+
+        private void _VotingClosed()
+        {
+            VotingOpened = false;
+            Console.WriteLine("Voting was closed");
+        }
 
         #endregion//Helpers
 

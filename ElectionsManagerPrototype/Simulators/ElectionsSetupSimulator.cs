@@ -73,12 +73,8 @@ namespace ElectionsManagerPrototype.Simulators
             ElectoralBody Scool = _GetElectoralBody();
             List<BallotBox> toScoolBallotBoxesList = _GetBallotBoxes(Scool);
 
-            //toScoolBallotBoxesList.ForEach(bBoxId => Scool.BallotBoxVotesDict.Add(bBoxId, 0));
-
-            //foreach(var position)
-            //toScoolBallotBoxesList.ForEach(bBox => )
-
-            ToScoolBoard = new Elections(123456789, Scool, toScoolBallotBoxesList, DateTime.Now, DateTime.Now.AddMinutes(2));
+            ToScoolBoard = new Elections(123456789, Scool, toScoolBallotBoxesList, DateTime.Now, 15);
+            ToScoolBoard.RunService();
 
             Console.WriteLine("Preparation of simulation results");
 

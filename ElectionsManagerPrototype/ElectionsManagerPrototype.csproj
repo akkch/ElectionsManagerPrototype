@@ -47,11 +47,13 @@
     <Compile Include="Contracts\IElectionsSetupModel.cs" />
     <Compile Include="Model\Address.cs" />
     <Compile Include="Model\BallotBox.cs" />
+    <Compile Include="Model\ElComMember.cs" />
     <Compile Include="Model\Elections.cs" />
     <Compile Include="Model\ElectoralBody.cs" />
     <Compile Include="Model\ElectoralBodyPosition.cs" />
     <Compile Include="Model\PositionOwner.cs" />
     <Compile Include="Model\PositionCandidate.cs" />
+    <Compile Include="Model\SystemAdmin.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\Voter.cs" />
     <Compile Include="Presenters\ElectionsSetupPresenter.cs" />
